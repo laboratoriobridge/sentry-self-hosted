@@ -18,7 +18,20 @@ https://develop.sentry.dev/self-hosted/
 
 ### Para atualizar
 
-TODO
+O processo de atualização do Sentry no servidor deve ser feito através da branch master deste repositório. Para isso:
+
+1. Clone este repositório no servidor do Sentry ou localmente.
+2. Defina o repositório original como upstream: `git remote add upstream https://github.com/getsentry/self-hosted.git`.
+3. Recupere as tags do repositório original: `git fetch --tags upstream`.
+4. Atualize as tags no repositório remoto: `git push --tags`.
+5. Atualize a branch master com o release para atualização: `git merge [nova_versao]`.
+  - É importante verificar alterações nos arquivos `config.example` e aplicar elas, quando necessário, nas configurações que estão no repositório e no servidor.
+  - Não devem ser incluídos arquivos vindos de atualizações no diretório `.github`.
+  - Podem ocorrer conflitos em arquivos de configuração que foram personalizados. A menos que seja proposital, cuidado para não eliminar configurações importantes.
+6. Realize `commit` e `push` do merge.
+7. Caso não esteja trabalhando no servidor do Sentry, atualize a branch master no servidor.
+8. Na pasta raiz do repositório rode a instalação do Sentry: `sudo install.sh`. O serviço ficará indisponível por algum tempo.
+9. Inicie os containers: `sudo docker compose up -d`
 
 ### Personalizações
 
