@@ -1,5 +1,76 @@
 # Changelog
 
+## 23.7.1
+
+### Various fixes & improvements
+
+- Resolve Safari Content-Disposition header bug (#2297) by @azaslavsky
+- feat: vroom cleanup script that respects default retention days (#2211) by @aldy505
+
+## 23.7.0
+
+### Various fixes & improvements
+
+- Remove nc -q option (#2275) by @hubertdeng123
+- Move open ai key from env variables (#2274) by @hubertdeng123
+- Fix command called in reset script (#2254) by @stayallive
+- Remove stale-bot in self-hosted (#2255) by @hubertdeng123
+- Update geoipupdate to 5.1.1 (#2236) by @williamdes
+
+## 23.6.2
+
+### Various fixes & improvements
+
+- Update nginx to 1.25.1 (#2235) by @williamdes
+- Fix error fingerprinting (#2237) by @chadwhitacre
+- A couple unit testing improvements (#2238) by @chadwhitacre
+- Fix #1684 (#2234) by @azaslavsky
+- Update memcached to 1.6.21 (#2231) by @williamdes
+- Update redis to 6.2.12 (#2230) by @williamdes
+- ref: Move all consumers to unified consumer CLI (#2224) by @hubertdeng123
+- Revert "ref: Move most consumers to unified consumer CLI" (#2223) by @hubertdeng123
+- ref: Move most consumers to unified consumer CLI (#2203) by @untitaker
+- Release 23.6.1 cleanup (#2209) by @hubertdeng123
+
+## 23.6.1
+
+### Various fixes & improvements
+
+- Fix bump version script (#2207) by @hubertdeng123
+
+## 23.6.0
+
+### Various fixes & improvements
+
+- Remove docker compose v1 (#2187) by @hubertdeng123
+- ref(compose): Separate ingest consumers (#2193) by @jan-auer
+- feat(profiling): Run profiling on self-hosted (#2154) by @phacops
+
+## 23.5.2
+
+- No documented changes.
+
+## 23.5.1
+
+### Various fixes & improvements
+
+- fix(suggested-fix): key should be 'key', not 'token' (#2146) by @aldy505
+
+## 23.5.0
+
+### Various fixes & improvements
+
+- Add no strict offset reset options to consumers (#2144) by @hubertdeng123
+- Add settings for enabling CSP to config file (#2134) by @hubertdeng123
+- feat: add suggested fix feature (#2115) by @aldy505
+- adding ulimits for zookeeper, kafka, and web (#2123) by @jamincollins
+- Uninstall Docker Compose v1 from CI so it's not used for tests (#2114) by @hubertdeng123
+- Fixed docker compose issue in backup/restore (#2110) by @montaniasystemab
+- Enable upstream keepalive (#2099) by @otbutz
+- Bump commit sha for e2e test action (#2104) by @hubertdeng123
+- Use docker compose exec to account for differences in container names for Postgres upgrade (#2096) by @hubertdeng123
+- Change symbolicator to use CalVer for release (#2091) by @hubertdeng123
+
 ## 23.4.0
 
 ### Postgres 14 Upgrade

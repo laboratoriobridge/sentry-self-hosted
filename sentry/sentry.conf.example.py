@@ -269,6 +269,7 @@ SENTRY_FEATURES.update(
             "organizations:performance-view",
             "organizations:advanced-search",
             "organizations:session-replay",
+            "organizations:profiling",
             "projects:custom-inbound-filters",
             "projects:data-forwarding",
             "projects:discard-groups",
@@ -291,3 +292,28 @@ GEOIP_PATH_MMDB = '/geoip/GeoLite2-City.mmdb'
 
 # BITBUCKET_CONSUMER_KEY = 'YOUR_BITBUCKET_CONSUMER_KEY'
 # BITBUCKET_CONSUMER_SECRET = 'YOUR_BITBUCKET_CONSUMER_SECRET'
+
+##############################################
+# Suggested Fix Feature / OpenAI Integration #
+##############################################
+
+# See https://docs.sentry.io/product/issues/issue-details/ai-suggested-solution/
+# for more information about the feature. Make sure the OpenAI's privacy policy is
+# aligned with your company.
+
+# Set the feature to be True if you'd like to enable Suggested Fix. You'll also need to
+# add your OPENAI_API_KEY to the docker-compose.yml file.
+SENTRY_FEATURES["organizations:open-ai-suggestion"] = False
+
+##############################################
+# Content Security Policy settings
+##############################################
+
+if "csp.middleware.CSPMiddleware" not in MIDDLEWARE:
+    MIDDLEWARE = ("csp.middleware.CSPMiddleware",) + MIDDLEWARE
+# CSP_REPORT_URI = "https://{your-sentry-installation}/api/{csp-project}/security/?sentry_key={sentry-key}"
+CSP_REPORT_ONLY = True
+
+# optional extra permissions
+# https://django-csp.readthedocs.io/en/latest/configuration.html
+# CSP_SCRIPT_SRC += ["example.com"]
