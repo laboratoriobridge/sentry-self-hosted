@@ -19,3 +19,8 @@ https://develop.sentry.dev/self-hosted/
 ### Para atualizar
 
 TODO
+
+### Personalizações
+
+- Otimização de uso de memória e armazenamento de logs e usando o RabbitMQ no lugar do Redis para controle de eventos em disco no lugar de usar memória - https://github.com/laboratoriobridge/sentry-self-hosted/commit/c44b45d2c132b0216bf038ff7ba12bcbc544334e
+- Limitação de requisições recebidas no Nginx - https://github.com/laboratoriobridge/sentry-self-hosted/commit/8ff91b54aa9cf9564f40f08bb34460918e20cd44
