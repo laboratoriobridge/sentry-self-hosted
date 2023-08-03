@@ -346,6 +346,21 @@ services:
   cron:
     <<: *sentry_defaults
     command: run cron
+  worker1:
+    << : *sentry_defaults
+    command: run worker -Q events.process_event
+  worker2:
+    << : *sentry_defaults
+    command: run worker -Q events.reprocessing.process_event
+  worker3:
+    << : *sentry_defaults
+    command: run worker -Q events.reprocess_events
+  worker4:
+    << : *sentry_defaults
+    command: run worker -Q events.save_event
+  worker5:
+    << : *sentry_defaults
+    command: run worker -Q subscriptions
   worker:
     <<: *sentry_defaults
     command: run worker
