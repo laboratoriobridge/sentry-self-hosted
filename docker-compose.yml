@@ -42,8 +42,6 @@ x-sentry-defaults: &sentry_defaults
       <<: *depends_on-default
     snuba-outcomes-consumer:
       <<: *depends_on-default
-    snuba-sessions-consumer:
-      <<: *depends_on-default
     snuba-transactions-consumer:
       <<: *depends_on-default
     snuba-subscription-consumer-events:
@@ -108,6 +106,7 @@ x-snuba-defaults: &snuba_defaults
 services:
   smtp:
     <<: *restart_policy
+    platform: linux/amd64
     image: tianon/exim4
     hostname: "${SENTRY_MAIL_HOST:-}"
     volumes:
@@ -123,7 +122,7 @@ services:
       test: echo stats | nc 127.0.0.1 11211
   redis:
     <<: *restart_policy
-    image: "redis:6.2.12-alpine"
+    image: "redis:6.2.13-alpine"
     healthcheck:
       <<: *healthcheck_defaults
       test: redis-cli ping
@@ -221,7 +220,7 @@ services:
       - "sentry-secrets:/etc/kafka/secrets"
     healthcheck:
       <<: *healthcheck_defaults
-      test: ["CMD-SHELL", "nc -z localhost 9092"]
+      test: ["CMD-SHELL", "/usr/bin/kafka-topics --bootstrap-server kafka:9092 --list"]
       interval: 10s
       timeout: 10s
       retries: 30
@@ -260,12 +259,11 @@ services:
       timeout: 10s
       retries: 30
   geoipupdate:
-    image: "maxmindinc/geoipupdate:v6.0.0"
+    image: "ghcr.io/maxmind/geoipupdate:v6.0.0"
     # Override the entrypoint in order to avoid using envvars for config.
     # Futz with settings so we can keep mmdb and conf in same dir on host
     # (image looks for them in separate dirs by default).
-    entrypoint:
-      ["/usr/bin/geoipupdate", "-d", "/sentry", "-f", "/sentry/GeoIP.conf"]
+    entrypoint: ["/usr/bin/geoipupdate", "-d", "/sentry", "-f", "/sentry/GeoIP.conf"]
     volumes:
       - "./geoip:/sentry"
   snuba-api:
@@ -280,10 +278,6 @@ services:
   snuba-outcomes-consumer:
     <<: *snuba_defaults
     command: consumer --storage outcomes_raw --auto-offset-reset=earliest --max-batch-time-ms 750 --no-strict-offset-reset
-  # Kafka consumer responsible for feeding session data into Clickhouse
-  snuba-sessions-consumer:
-    <<: *snuba_defaults
-    command: consumer --storage sessions_raw --auto-offset-reset=latest --max-batch-time-ms 750 --no-strict-offset-reset
   # Kafka consumer responsible for feeding transactions data into Clickhouse
   snuba-transactions-consumer:
     <<: *snuba_defaults
@@ -294,18 +288,30 @@ services:
   snuba-issue-occurrence-consumer:
     <<: *snuba_defaults
     command: consumer --storage search_issues --consumer-group generic_events_group --auto-offset-reset=latest --max-batch-time-ms 750 --no-strict-offset-reset
+  snuba-metrics-consumer:
+    <<: *snuba_defaults
+    command: consumer --storage metrics_raw --consumer-group snuba-metrics-consumers --auto-offset-reset=latest --max-batch-time-ms 750 --no-strict-offset-reset
+  snuba-generic-metrics-distributions-consumer:
+    <<: *snuba_defaults
+    command: consumer --storage generic_metrics_distributions_raw --consumer-group snuba-gen-metrics-distributions-consumers --auto-offset-reset=latest --max-batch-time-ms 750 --no-strict-offset-reset
+  snuba-generic-metrics-sets-consumer:
+    <<: *snuba_defaults
+    command: consumer --storage generic_metrics_sets_raw --consumer-group snuba-gen-metrics-sets-consumers --auto-offset-reset=latest --max-batch-time-ms 750 --no-strict-offset-reset
+  snuba-generic-metrics-counters-consumer:
+    <<: *snuba_defaults
+    command: consumer --storage generic_metrics_counters_raw --consumer-group snuba-gen-metrics-counters-consumers --auto-offset-reset=latest --max-batch-time-ms 750 --no-strict-offset-reset
   snuba-replacer:
     <<: *snuba_defaults
     command: replacer --storage errors --auto-offset-reset=latest --no-strict-offset-reset
   snuba-subscription-consumer-events:
     <<: *snuba_defaults
-    command: subscriptions-scheduler-executor --dataset events --entity events --auto-offset-reset=latest --no-strict-offset-reset --consumer-group=snuba-events-subscriptions-consumers --followed-consumer-group=snuba-consumers --delay-seconds=60 --schedule-ttl=60 --stale-threshold-seconds=900
-  snuba-subscription-consumer-sessions:
-    <<: *snuba_defaults
-    command: subscriptions-scheduler-executor --dataset sessions --entity sessions --auto-offset-reset=latest --no-strict-offset-reset --consumer-group=snuba-sessions-subscriptions-consumers --followed-consumer-group=sessions-group --delay-seconds=60 --schedule-ttl=60 --stale-threshold-seconds=900
+    command: subscriptions-scheduler-executor --dataset events --entity events --auto-offset-reset=latest --no-strict-offset-reset --consumer-group=snuba-events-subscriptions-consumers --followed-consumer-group=snuba-consumers --schedule-ttl=60 --stale-threshold-seconds=900
   snuba-subscription-consumer-transactions:
     <<: *snuba_defaults
-    command: subscriptions-scheduler-executor --dataset transactions --entity transactions --auto-offset-reset=latest --no-strict-offset-reset --consumer-group=snuba-transactions-subscriptions-consumers --followed-consumer-group=transactions_group --delay-seconds=60 --schedule-ttl=60 --stale-threshold-seconds=900
+    command: subscriptions-scheduler-executor --dataset transactions --entity transactions --auto-offset-reset=latest --no-strict-offset-reset --consumer-group=snuba-transactions-subscriptions-consumers --followed-consumer-group=transactions_group --schedule-ttl=60 --stale-threshold-seconds=900
+  snuba-subscription-consumer-metrics:
+    <<: *snuba_defaults
+    command: subscriptions-scheduler-executor --dataset metrics --entity metrics_sets --entity metrics_counters --auto-offset-reset=latest --no-strict-offset-reset --consumer-group=snuba-metrics-subscriptions-consumers --followed-consumer-group=snuba-metrics-consumers --schedule-ttl=60 --stale-threshold-seconds=900
   snuba-profiling-profiles-consumer:
     <<: *snuba_defaults
     command: consumer --storage profiles --auto-offset-reset=latest --max-batch-time-ms 1000 --no-strict-offset-reset
@@ -377,6 +383,15 @@ services:
   transactions-consumer:
     <<: *sentry_defaults
     command: run consumer ingest-transactions --consumer-group ingest-consumer
+  metrics-consumer:
+    <<: *sentry_defaults
+    command: run consumer ingest-metrics --consumer-group metrics-consumer
+  generic-metrics-consumer:
+    <<: *sentry_defaults
+    command: run consumer ingest-generic-metrics --consumer-group generic-metrics-consumer
+  billing-metrics-consumer:
+    <<: *sentry_defaults
+    command: run consumer billing-metrics-consumer --consumer-group billing-metrics-consumer
   ingest-replay-recordings:
     <<: *sentry_defaults
     command: run consumer ingest-replay-recordings --consumer-group ingest-replay-recordings
@@ -401,6 +416,12 @@ services:
   subscription-consumer-transactions:
     <<: *sentry_defaults
     command: run consumer transactions-subscription-results --consumer-group query-subscription-consumer
+  subscription-consumer-metrics:
+    <<: *sentry_defaults
+    command: run consumer metrics-subscription-results --consumer-group query-subscription-consumer
+  subscription-consumer-generic-metrics:
+    <<: *sentry_defaults
+    command: run consumer generic-metrics-subscription-results --consumer-group query-subscription-consumer
   sentry-cleanup:
     <<: *sentry_defaults
     image: sentry-cleanup-self-hosted-local
@@ -414,7 +435,7 @@ services:
     <<: *restart_policy
     ports:
       - "$SENTRY_BIND:80/tcp"
-    image: "nginx:1.25.1-alpine"
+    image: "nginx:1.25.2-alpine"
     volumes:
       - type: bind
         read_only: true
