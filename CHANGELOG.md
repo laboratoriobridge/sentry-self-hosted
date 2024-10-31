@@ -1,5 +1,187 @@
 # Changelog
 
+## 24.10.0
+
+### Various fixes & improvements
+
+- chore: Disable codecov for master/release branches (#3384) by @hubertdeng123
+- chore: replace old URLs of the repo with the new docs (#3375) by @victorelec14
+- ref: span normalization allowed host config (#3245) by @aldy505
+- docs: explicitly specify `mail.use-{tls,ssl}` is mutually exclusive (#3368) by @aldy505
+- ref: allow hosted js sdk bundles (#3365) by @aldy505
+- fix(clickhouse): Allow nullable key (#3354) by @nikhars
+
+## 24.9.0
+
+### Various fixes & improvements
+
+- docs: link to develop docs (#3307) by @joshuarli
+- fix: more leeway for minimum RAM (#3290) by @joshuarli
+- Mandate minimum requirements for ram/cpu (#3275) by @hubertdeng123
+- ref(feedback): cleanup topic rollout option (#3276) by @aliu39
+- Update release template (#3270) by @hubertdeng123
+
+## 24.8.0
+
+### Various fixes & improvements
+
+- Migrate to zookeeper-less kafka  (#3263) by @hubertdeng123
+- Revert "ref(feedback): cleanup topic rollout option" (#3262) by @aliu39
+- ref(feedback): cleanup topic rollout option (#3256) by @aliu39
+- Remove cdc and wal2json and use the default postgres entrypoint (#3260) by @beezz
+- add `-euo pipefail` to enhance-image.example.sh (#3246) by @asottile-sentry
+- remove python-dev (#3242) by @asottile-sentry
+- feat: enable user feedback feature (#3193) by @aldy505
+- Use CDN by default for JS SDK Loader (#3213) by @stayallive
+
+## 24.7.1
+
+### Various fixes & improvements
+
+- Fix: errors only config flag (#3220) by @hubertdeng123
+- Add errors only self-hosted infrastructure (#3190) by @hubertdeng123
+- feat(generic-metrics): Add gauges to docker compose, re-try (#3177) by @ayirr7
+
+## 24.7.0
+
+### Various fixes & improvements
+
+- Check postgres os before proceeding with install (#3197) by @hubertdeng123
+- Update sentry-admin.sh to select its own working directory (#3184) by @theoriginalgri
+- feat: add insights feature flags (#3152) by @aldy505
+- feat(relay): Forward /api/0/relays/* to inner relays (#3144) by @iambriccardo
+
+## 24.6.0
+
+### Various fixes & improvements
+
+- Use general kafka topic creation in self-hosted (#3121) by @hubertdeng123
+- Use non-alpine postgres (#3116) by @hubertdeng123
+- Bump Python SDK version used in tests (#3108) by @sentrivana
+
+## 24.5.1
+
+### Various fixes & improvements
+
+- Update consumer flags (#3112) by @hubertdeng123
+- feat: Add crons task consumers  (#3106) by @wedamija
+- Update minimum docker compose requirement (#3078) by @JannKleen
+- Different approach to editing permissions of docker volumes (#3084) by @hubertdeng123
+- ref(spans): Add new feature flags needed (#3092) by @phacops
+- chore: Add comment explaining the one liner in clickhouse config (#3085) by @hubertdeng123
+- Fix install: use dynamic docker root dir instead of hardcoded one (#3064) by @boutetnico
+- Typo in config.example.yml (#3063) by @luchaninov
+
+## 24.5.0
+
+### Various fixes & improvements
+
+- fix: Make docker volume script respect compose project name (#3039) by @hubertdeng123
+- remove ref to skip writes (#3041) by @john-z-yang
+- Add clickhouse healthchecks to upgrade (#3024) by @hubertdeng123
+- Upgrade clickhouse to 23.8 (#3009) by @hubertdeng123
+- fix: use nginx realip module (#2977) by @oioki
+- Add upgrade test (#3012) by @hubertdeng123
+- Bump kafka and zookeeper versions (#2988) by @hubertdeng123
+
+## 24.4.2
+
+### Various fixes & improvements
+
+- Edit test file name (#3002) by @hubertdeng123
+- Revert "Sampling: Run e2e tests every 5 minutes" (#2999) by @hubertdeng123
+- Fix master test failures (#3000) by @hubertdeng123
+- Sampling: Run e2e tests every 5 minutes (#2994) by @hubertdeng123
+- Tweak e2e test github action (#2987) by @hubertdeng123
+- fix(performance): Add spans-first-ui flag to enable starfish/performance module views in ui (#2993) by @edwardgou-sentry
+- Bump docker compose version in CI (#2980) by @hubertdeng123
+- Upgrade postgres to 14.11 (#2975) by @mdtro
+- Add workstation configuration (#2968) by @azaslavsky
+
+## 24.4.1
+
+### Various fixes & improvements
+
+- chore(deps): bump memcached and redis to latest patch versions (#2973) by @mdtro
+- Use docker compose exec to create additional kafka topics (#2904) by @saz
+- Add example to docker compose version in problem report (#2959) by @edgariscoding
+- Port last integration tests to python (#2966) by @hubertdeng123
+
+## 24.4.0
+
+### Various fixes & improvements
+
+- Use python for e2e tests (#2953) by @hubertdeng123
+- feat: adds group attributes consumer (#2927) by @scefali
+- fix(spans): Adds organizations:standalone-span-ingestion flag to default config (#2936) by @edwardgou-sentry
+- Bump ubuntu version for tests (#2923) by @hubertdeng123
+- Write Customization tests in python (#2918) by @hubertdeng123
+- feat(clickhouse): Added max_suspicious_broken_parts to the config.xml (#2853) by @victorelec14
+- Port backup tests to python (#2907) by @hubertdeng123
+- Fix defunct java processes (#2914) by @hubertdeng123
+- Integration tests in python (#2892) by @hubertdeng123
+- feat: run outcomes-billing consumer (#2909) by @lynnagara
+- Remove duplicate feature flags (#2899) by @JannKleen
+
+## 24.3.0
+
+### Various fixes & improvements
+
+- feat(spans): Ingest spans (#2861) by @phacops
+- Integration test improvements (#2858) by @hubertdeng123
+- increase postgres max_connections above 100 connections (#2740) by @erfantkerfan
+- deps: bump maxmind/geoipupdate to 6.1.0 (#2859) by @victorelec14
+- Enable proxy buffering in nginx (#2844) by @RexTim
+- Add snuba rust consumers (#2831) by @hubertdeng123
+- simplify if for open-ai-suggestion (#2732) by @LvckyAPI
+- Upgrade to FSL-1.1 (#2835) by @chadwhitacre
+- chore: provide clearer csrf url example (#2833) by @aldy505
+- chore: Use django ORM to perform sql commands (#2827) by @hubertdeng123
+- revert changes in 3067683f6c0e1c6dd9ceb72cb5155c1dbf3bf501 (#2829) by @hubertdeng123
+- use rust consumers in self-hosted (3067683f) by @hubertdeng123
+
+## 24.2.0
+
+### Various fixes & improvements
+
+- Bump nginx version (#2797) by @hubertdeng123
+- build(deps): bump pre-commit/action from 3.0.0 to 3.0.1 (#2788) by @dependabot
+- Tweak postgres indexing fix (#2792) by @hubertdeng123
+- fix: DB migration script (#2779) by @hubertdeng123
+
+## 24.1.2
+
+### Various fixes & improvements
+
+- Check memcached backend in Django (#2778) by @chadwhitacre
+- Fix groupedmessage indexing error (#2777) by @hubertdeng123
+- build(deps): bump actions/setup-python from 4 to 5 (#2644) by @dependabot
+- feat: provide csrf settings information for sentry config (#2762) by @aldy505
+- Fix apt config generation when http_proxy is set (#2725) (#2734) by @lemrouch
+
+## 24.1.1
+
+### Various fixes & improvements
+
+- Revert "Move open ai key from env variables" (#2724) by @hubertdeng123
+- Fix cache error self hosted (#2722) by @hubertdeng123
+
+## 24.1.0
+
+### Various fixes & improvements
+
+- Enable crons (#2712) by @hubertdeng123
+- Parameterize backup restore script (#2412) by @hubertdeng123
+- Run tests only on getsentry repository (#2681) by @aminvakil
+- Tweak the template now that we can see it (#2670) by @chadwhitacre
+- Nginx client request body is buffered to a temporary file (#2630) by @zKoz210
+
+## 23.12.1
+
+### Various fixes & improvements
+
+- Make a release issue template (#2666) by @chadwhitacre
+
 ## 23.12.0
 
 ### Various fixes & improvements

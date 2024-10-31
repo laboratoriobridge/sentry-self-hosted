@@ -5,10 +5,12 @@ from sentry.conf.server import *  # NOQA
 
 BYTE_MULTIPLIER = 1024
 UNITS = ("K", "M", "G")
+
+
 def unit_text_to_bytes(text):
     unit = text[-1].upper()
     power = UNITS.index(unit) + 1
-    return float(text[:-1])*(BYTE_MULTIPLIER**power)
+    return float(text[:-1]) * (BYTE_MULTIPLIER**power)
 
 
 # Generously adapted from pynetlinux: https://github.com/rlisagor/pynetlinux/blob/e3f16978855c6649685f0c43d4c3fcf768427ae5/pynetlinux/ifconfig.py#L197-L223
@@ -111,12 +113,10 @@ else:
 
 CACHES = {
     "default": {
-        "BACKEND": "django.core.cache.backends.memcached.MemcachedCache",
+        "BACKEND": "django.core.cache.backends.memcached.PyMemcacheCache",
         "LOCATION": ["memcached:11211"],
         "TIMEOUT": 3600,
-        "OPTIONS": {
-            "server_max_value_length": unit_text_to_bytes(env("SENTRY_MAX_EXTERNAL_SOURCEMAP_SIZE", "1M")),
-        },
+        "OPTIONS": {"ignore_exc": True},
     }
 }
 
@@ -193,7 +193,9 @@ SENTRY_DIGESTS = "sentry.digests.backends.redis.RedisBackend"
 ###################
 
 SENTRY_RELEASE_HEALTH = "sentry.release_health.metrics.MetricsReleaseHealthBackend"
-SENTRY_RELEASE_MONITOR = "sentry.release_health.release_monitor.metrics.MetricReleaseMonitorBackend"
+SENTRY_RELEASE_MONITOR = (
+    "sentry.release_health.release_monitor.metrics.MetricReleaseMonitorBackend"
+)
 
 ##############
 # Web Server #
@@ -250,7 +252,7 @@ SENTRY_WEB_OPTIONS = {
 # Mail #
 ########
 
-SENTRY_OPTIONS["mail.list-namespace"] = env('SENTRY_MAIL_HOST', 'localhost')
+SENTRY_OPTIONS["mail.list-namespace"] = env("SENTRY_MAIL_HOST", "localhost")
 SENTRY_OPTIONS["mail.from"] = f"sentry@{SENTRY_OPTIONS['mail.list-namespace']}"
 
 ############
@@ -278,6 +280,7 @@ SENTRY_FEATURES.update(
             "organizations:session-replay",
             "organizations:issue-platform",
             "organizations:profiling",
+            "organizations:monitors",
             "organizations:dashboards-mep",
             "organizations:mep-rollout-flag",
             "organizations:dashboards-rh-widget",
@@ -290,6 +293,35 @@ SENTRY_FEATURES.update(
             "projects:rate-limits",
             "projects:servicehooks",
         )
+        # Starfish related flags
+        + (
+            "organizations:deprecate-fid-from-performance-score",
+            "organizations:indexed-spans-extraction",
+            "organizations:insights-entry-points",
+            "organizations:insights-initial-modules",
+            "organizations:insights-addon-modules",
+            "organizations:mobile-ttid-ttfd-contribution",
+            "organizations:performance-calculate-score-relay",
+            "organizations:standalone-span-ingestion",
+            "organizations:starfish-browser-resource-module-image-view",
+            "organizations:starfish-browser-resource-module-ui",
+            "organizations:starfish-browser-webvitals",
+            "organizations:starfish-browser-webvitals-pageoverview-v2",
+            "organizations:starfish-browser-webvitals-replace-fid-with-inp",
+            "organizations:starfish-browser-webvitals-use-backend-scores",
+            "organizations:starfish-mobile-appstart",
+            "projects:span-metrics-extraction",
+            "projects:span-metrics-extraction-addons",
+        )
+        # User Feedback related flags
+        + (
+            "organizations:user-feedback-ingest",
+            "organizations:user-feedback-replay-clip",
+            "organizations:user-feedback-ui",
+            "organizations:feedback-visible",
+            "organizations:feedback-ingest",
+            "organizations:feedback-post-process-group",
+        )
     }
 )
 
@@ -297,7 +329,7 @@ SENTRY_FEATURES.update(
 # MaxMind Integration #
 #######################
 
-GEOIP_PATH_MMDB = '/geoip/GeoLite2-City.mmdb'
+GEOIP_PATH_MMDB = "/geoip/GeoLite2-City.mmdb"
 
 #########################
 # Bitbucket Integration #
@@ -314,9 +346,11 @@ GEOIP_PATH_MMDB = '/geoip/GeoLite2-City.mmdb'
 # for more information about the feature. Make sure the OpenAI's privacy policy is
 # aligned with your company.
 
-# Set the feature to be True if you'd like to enable Suggested Fix. You'll also need to
-# add your OPENAI_API_KEY to the docker-compose.yml file.
-SENTRY_FEATURES["organizations:open-ai-suggestion"] = False
+# Set the OPENAI_API_KEY on the .env or .env.custom file with a valid
+# OpenAI API key to turn on the feature.
+OPENAI_API_KEY = env("OPENAI_API_KEY", "")
+
+SENTRY_FEATURES["organizations:open-ai-suggestion"] = bool(OPENAI_API_KEY)
 
 ##############################################
 # Content Security Policy settings
@@ -328,3 +362,46 @@ CSP_REPORT_ONLY = True
 # optional extra permissions
 # https://django-csp.readthedocs.io/en/latest/configuration.html
 # CSP_SCRIPT_SRC += ["example.com"]
+
+#################
+# CSRF Settings #
+#################
+
+# Since version 24.1.0, Sentry migrated to Django 4 which contains stricter CSRF protection.
+# If you are accessing Sentry from multiple domains behind a reverse proxy, you should set
+# this to match your IPs/domains. Ports should be included if you are using custom ports.
+# https://docs.djangoproject.com/en/4.2/ref/settings/#std-setting-CSRF_TRUSTED_ORIGINS
+
+# CSRF_TRUSTED_ORIGINS = ["https://example.com", "http://127.0.0.1:9000"]
+
+#################
+# JS SDK Loader #
+#################
+
+# Configure Sentry JS SDK bundle URL template for Loader Scripts.
+# Learn more about the Loader Scripts: https://docs.sentry.io/platforms/javascript/install/loader/
+# If you wish to host your own JS SDK bundles, set `SETUP_JS_SDK_ASSETS` environment variable to `1`
+# on your `.env` or `.env.custom` file. Then, replace the value below with your own public URL.
+# For example: "https://sentry.example.com/js-sdk/%s/bundle%s.min.js"
+#
+# By default, the previous JS SDK assets version will be pruned during upgrades, if you wish
+# to keep the old assets, set `SETUP_JS_SDK_KEEP_OLD_ASSETS` environment variable to any value on
+# your `.env` or `.env.custom` file. The files should only be a few KBs, and this might be useful
+# if you're using it directly like a CDN instead of using the loader script.
+JS_SDK_LOADER_DEFAULT_SDK_URL = "https://browser.sentry-cdn.com/%s/bundle%s.min.js"
+
+
+# If you would like to use self-hosted Sentry with only errors enabled, please set this
+SENTRY_SELF_HOSTED_ERRORS_ONLY = env("COMPOSE_PROFILES") != "feature-complete"
+
+#####################
+# Insights Settings #
+#####################
+
+# Since version 24.3.0, Insights features are available on self-hosted. For Requests module,
+# there are scrubbing logic done on Relay to prevent high cardinality of stored HTTP hosts.
+# However in self-hosted scenario, the amount of stored HTTP hosts might be consistent,
+# and you may have allow list of hosts that you want to keep. Uncomment the following line
+# to allow specific hosts. It might be IP addresses or domain names (without `http://` or `https://`).
+
+# SENTRY_OPTIONS["relay.span-normalization.allowed_hosts"] = ["example.com", "192.168.10.1"]

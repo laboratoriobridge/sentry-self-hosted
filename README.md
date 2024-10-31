@@ -1,4 +1,4 @@
-# Self-Hosted Sentry 23.12.0
+# Self-Hosted Sentry 24.10.0
 
 Fork do [Sentry Self-Hosted](https://github.com/getsentry/self-hosted/) com configurações personalizadas para uso do Bridge
 
@@ -26,7 +26,7 @@ O processo de atualização do Sentry no servidor deve ser feito através da bra
 4. Atualize as tags no repositório remoto: `git push --tags`.
 5. Atualize a branch master com o release para atualização: `git merge [nova_versao]`.
 
-- É importante verificar alterações nos arquivos `config.example` e aplicar elas, quando necessário, nas configurações que estão no repositório e no servidor.
+- É importante verificar alterações nos arquivos `config.example` e `conf.example` (existem alguns) e aplicar elas, quando necessário, nos respectivos arquivos conf/config que estão no repositório e no servidor.
 - Não devem ser incluídos arquivos vindos de atualizações no diretório `.github`.
 - Podem ocorrer conflitos em arquivos de configuração que foram personalizados. A menos que seja proposital, cuidado para não eliminar configurações importantes.
 
