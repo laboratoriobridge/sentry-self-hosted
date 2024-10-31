@@ -1,11 +1,11 @@
-# Self-Hosted Sentry 23.12.0
+# Self-Hosted Sentry 24.8.0
 
 Fork do [Sentry Self-Hosted](https://github.com/getsentry/self-hosted/) com configurações personalizadas para uso do Bridge
 
 ## Requisitos
 
 - Docker 19.03.6+
-- Compose 2.0.1+
+- Compose 2.19.0+
 - 4 CPU Cores
 - 16 GB RAM
 - 200 GB Free Disk Space
