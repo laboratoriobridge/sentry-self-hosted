@@ -1,4 +1,4 @@
-# Self-Hosted Sentry 24.10.0
+# Self-Hosted Sentry 25.2.0
 
 Fork do [Sentry Self-Hosted](https://github.com/getsentry/self-hosted/) com configurações personalizadas para uso do Bridge
 
@@ -39,5 +39,5 @@ O processo de atualização do Sentry no servidor deve ser feito através da bra
 
 - Otimização de uso de memória e armazenamento de logs e usando o RabbitMQ no lugar do Redis para controle de eventos em disco no lugar de usar memória - https://github.com/laboratoriobridge/sentry-self-hosted/commit/c44b45d2c132b0216bf038ff7ba12bcbc544334e
   - Alterações no Kafka foram desfeitas - https://github.com/laboratoriobridge/sentry-self-hosted/commit/3300bd6386265433e87d27ad76eb8158ede5f495
-- Limitação de requisições recebidas no Nginx - https://github.com/laboratoriobridge/sentry-self-hosted/commit/8ff91b54aa9cf9564f40f08bb34460918e20cd44
 - Aumento de tempo de timeout para resposta dos serviços: https://github.com/laboratoriobridge/sentry-self-hosted/commit/6dd8a4e200f211c482fe14885a4209ef8798ce32
+- Ajuste de IPs e domínio dos hosts no Nginx - https://github.com/laboratoriobridge/sentry-self-hosted/commit/affe66ff7422496ffd708d3360251487ddb7e42b
