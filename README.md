@@ -33,7 +33,7 @@ O processo de atualização do Sentry no servidor deve ser feito através da bra
 6. Realize `commit` e `push` do merge.
 7. Caso não esteja trabalhando no servidor do Sentry, atualize a branch master no servidor.
 8. Na pasta raiz do repositório rode a instalação do Sentry: `sudo ./install.sh`. O serviço ficará indisponível por algum tempo.
-9. Inicie os containers: `sudo docker compose up -d`
+9. Inicie os containers: `sudo docker compose up --wait`
 
 ### Personalizações
 
