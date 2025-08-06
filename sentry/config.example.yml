@@ -52,6 +52,9 @@ system.internal-url-prefix: 'http://web:9000'
 # If this file ever becomes compromised, it's important to generate a new key.
 # Changing this value will result in all current sessions being invalidated.
 # A new key can be generated with `$ sentry config generate-secret-key`
+#
+# If you are using SENTRY_SYSTEM_SECRET_KEY that is being set on your `.env` or `.env.custom` file,
+# you should remove this line below as it won't be used anyway.
 system.secret-key: '!!changeme!!'
 
 # The ``redis.clusters`` setting is used, unsurprisingly, to configure Redis
@@ -133,3 +136,12 @@ transaction-events.force-disable-internal-project: true
 # discord.public-key: "<public key>"
 # discord.client-secret: "<client secret>"
 # discord.bot-token: "<bot token>"
+
+###############
+# Google Auth #
+###############
+
+# Refer to https://develop.sentry.dev/self-hosted/sso/#google-auth
+
+# auth-google.client-id: "<client id>"
+# auth-google.client-secret: "<client secret>"
