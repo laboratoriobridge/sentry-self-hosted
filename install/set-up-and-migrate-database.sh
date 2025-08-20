@@ -3,7 +3,7 @@ echo "${_group}Setting up / migrating database ..."
 if [[ -z "${SKIP_SENTRY_MIGRATIONS:-}" ]]; then
   # Removido pois o BD agora fica em outra máquina
   # Fixes https://github.com/getsentry/self-hosted/issues/2758, where a migration fails due to indexing issue
-  # $dc up --wait postgres
+  # start_service_and_wait_ready postgres
 
   # os=$($dc exec postgres cat /etc/os-release | grep 'ID=debian')
   # if [[ -z $os ]]; then

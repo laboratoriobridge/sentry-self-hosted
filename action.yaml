@@ -142,6 +142,17 @@ runs:
         volumes: |
           sentry-kafka
 
+    - name: Setup swapfile
+      shell: bash
+      if: runner.arch == 'X64' || runner.arch == 'X86'
+      run: |
+        sudo fallocate -l 16G /swapfile
+        sudo chmod 600 /swapfile
+        sudo mkswap /swapfile
+        sudo swapon /swapfile
+        sudo swapon --show
+        free -h
+
     - name: Integration Test
       shell: bash
       run: |
@@ -168,3 +179,15 @@ runs:
       with:
         directory: ${{ github.action_path }}
         token: ${{ inputs.CODECOV_TOKEN }}
+
+    - name: Inspect failure
+      if: failure()
+      shell: bash
+      run: |
+        echo "::group::Inspect failure - docker compose ps"
+        cd ${{ github.action_path }}
+        docker compose ps
+        echo "::endgroup::"
+        echo "::group::Inspect failure - docker compose logs"
+        docker compose logs
+        echo "::endgroup::"
