@@ -1,4 +1,4 @@
-# Self-Hosted Sentry 25.7.0
+# Self-Hosted Sentry 25.8.0
 
 Fork do [Sentry Self-Hosted](https://github.com/getsentry/self-hosted/) com configurações personalizadas para uso do Bridge
 

@@ -38,8 +38,8 @@ x-sentry-defaults: &sentry_defaults
       <<: *depends_on-healthy
     kafka:
       <<: *depends_on-healthy
-    postgres:
-      <<: *depends_on-healthy
+    # postgres:
+    #  <<: *depends_on-healthy
     memcached:
       <<: *depends_on-default
     smtp:
@@ -144,22 +144,22 @@ services:
       - "sentry-rabbitmq:/var/lib/rabbitmq"
     ports:
       - 5672:5672
-  postgres:
-    <<: *restart_policy
-    # Using the same postgres version as Sentry dev for consistency purposes
-    image: "postgres:14.11"
-    ports:
-      - 54329:5432
-    healthcheck:
-      <<: *healthcheck_defaults
-      # Using default user "postgres" from sentry/sentry.conf.example.py or value of POSTGRES_USER if provided
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres}"]
-    command:
-      ["postgres", "-c", "max_connections=${POSTGRES_MAX_CONNECTIONS:-100}"]
-    environment:
-      POSTGRES_HOST_AUTH_METHOD: "trust"
-    volumes:
-      - "sentry-postgres:/var/lib/postgresql/data"
+  # postgres:
+  #  <<: *restart_policy
+  #  # Using the same postgres version as Sentry dev for consistency purposes
+  #  image: "postgres:14.11"
+  #  ports:
+  #    - 54329:5432
+  #  healthcheck:
+  #    <<: *healthcheck_defaults
+  #    # Using default user "postgres" from sentry/sentry.conf.example.py or value of POSTGRES_USER if provided
+  #    test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres}"]
+  #  command:
+  #    ["postgres", "-c", "max_connections=${POSTGRES_MAX_CONNECTIONS:-100}"]
+  #  environment:
+  #    POSTGRES_HOST_AUTH_METHOD: "trust"
+  #  volumes:
+  #    - "sentry-postgres:/var/lib/postgresql/data"
   kafka:
     <<: *restart_policy
     image: "confluentinc/cp-kafka:7.6.1"
@@ -796,8 +796,8 @@ volumes:
   # These store application data that should persist across restarts.
   sentry-data:
     external: true
-  sentry-postgres:
-    external: true
+  # sentry-postgres:
+  #   external: true
   sentry-redis:
     external: true
   sentry-rabbitmq:
