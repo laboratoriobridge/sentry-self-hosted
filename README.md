@@ -41,3 +41,4 @@ O processo de atualização do Sentry no servidor deve ser feito através da bra
   - Alterações no Kafka foram desfeitas - https://github.com/laboratoriobridge/sentry-self-hosted/commit/3300bd6386265433e87d27ad76eb8158ede5f495
 - Aumento de tempo de timeout para resposta dos serviços: https://github.com/laboratoriobridge/sentry-self-hosted/commit/6dd8a4e200f211c482fe14885a4209ef8798ce32
 - Ajuste de IPs e domínio dos hosts no Nginx - https://github.com/laboratoriobridge/sentry-self-hosted/commit/affe66ff7422496ffd708d3360251487ddb7e42b
+- Mudança de como as migrações de BD são rodadas para ser compatível com o Postgres hospedado em outra máquina -
